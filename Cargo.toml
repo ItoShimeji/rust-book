@@ -1,0 +1,4 @@
+[workspace]
+members = ["c*/*"]
+exclude = ["c1/hello_world"]
+resolver = "3"

@@ -11,7 +11,7 @@ Use this skill to turn one Rust Book chapter URL into a local practice project t
 
 1. Read repository context before creating files.
    - Check `pwd`, `git status --short`, and existing top-level chapter project names.
-   - Identify the naming convention, such as `c5_structs`, `c5_methods`, or `c5_practice_book_logger`.
+   - Identify the naming convention, such as `c5/structs`, `c5/methods`, or `c5/practice_book_logger`.
    - Inspect nearby `Cargo.toml` files for edition and package naming style.
 
 2. Read the chapter URL.
@@ -27,10 +27,11 @@ Use this skill to turn one Rust Book chapter URL into a local practice project t
    - Include explicit requirements, expected functions/methods, behavior checks, and optional extensions.
 
 4. Create the Cargo project in the existing style.
-   - Use a directory name like `c{chapter}_practice_{short_slug}`.
-   - Use `cargo new <dir>` unless the repository clearly creates projects another way.
-   - Do not create a workspace unless the repository already uses one.
-   - Match the local Cargo edition if existing projects consistently use one.
+   - Use a directory name like `c{chapter}/practice_{short_slug}`.
+   - Use `cargo new <dir>` from the repository root unless the repository clearly creates projects another way.
+   - Keep the package name without a chapter prefix; the chapter is already represented by the parent directory.
+   - Rely on the root workspace `members = ["c*/*"]` so new Cargo projects are included automatically.
+   - Do not add per-project `Cargo.lock` files; the workspace root `Cargo.lock` is authoritative.
    - Avoid modifying unrelated chapter projects.
 
 5. Write the task into `<project>/README.md`.
@@ -54,8 +55,8 @@ cargo clippy
    - Do not solve the exercise in the generated project unless requested.
 
 7. Verify the created project.
-   - Run `cargo fmt -- --check` in the new project if only starter code and README were created.
-   - Run `cargo check` if any Rust code was changed beyond `cargo new` defaults.
+   - Run `cargo fmt -- --check` from the repository root if only starter code and README were created.
+   - Run `cargo check -p <package_name>` if any Rust code was changed beyond `cargo new` defaults.
    - Report the created path and any commands run.
 
 ## README Shape
