@@ -1,0 +1,4 @@
+interface:
+  display_name: "Rust Book Chapter Practice"
+  short_description: "Create chapter practice projects with README prompts for this repo."
+  default_prompt: "Create a practice project for this Rust Book chapter URL."
