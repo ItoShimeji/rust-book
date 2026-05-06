@@ -26,11 +26,8 @@ impl Book {
     }
 
     fn read(&mut self, pages: u32) {
-        if self.current_page + pages <= self.pages {
-            self.current_page += pages;
-        } else {
-            self.current_page = self.pages;
-        }
+        // min method の存在を知らなかった（調べるの面倒だった）が、こっちの方が良いか
+        self.current_page = (self.current_page + pages).min(self.pages);
     }
 
     fn is_finished(&self) -> bool {
