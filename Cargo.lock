@@ -69,6 +69,17 @@ name = "ownership"
 version = "0.1.0"
 
 [[package]]
+name = "paths"
+version = "0.1.0"
+
+[[package]]
+name = "paths_into_scope"
+version = "0.1.0"
+dependencies = [
+ "rand",
+]
+
+[[package]]
 name = "ppv-lite86"
 version = "0.2.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -176,6 +187,10 @@ checksum = "e6e4313cd5fcd3dad5cafa179702e2b244f760991f45397d14d4ebf38247da75"
 
 [[package]]
 name = "variables"
+version = "0.1.0"
+
+[[package]]
+name = "vectors"
 version = "0.1.0"
 
 [[package]]
