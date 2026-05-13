@@ -54,15 +54,10 @@ fn main() {
                         keys.sort();
 
                         for department in keys {
-                            let members = company.get(department);
-                            match members {
-                                Some(members) => {
-                                    print_list(department, members);
-                                }
-                                None => {
-                                    continue;
-                                }
-                            }
+                            // department は必ず存在するため、このように直接アクセスし、
+                            // 例外は panic を起こさせることもできる。
+                            let members = &company[department];
+                            print_list(department, members);
                         }
                     }
                     _ => {
@@ -91,19 +86,14 @@ fn main() {
 }
 
 fn parse_add<'a>(mut parts: std::str::SplitWhitespace<'a>) -> Result<Command, ()> {
-    let name = match parts.next() {
-        Some(name) => name,
-        None => return Err(()),
-    };
+    // ? で失敗ならそのまま return が書ける。
+    let name = parts.next().ok_or(())?;
 
     let Some("to") = parts.next() else {
         return Err(());
     };
 
-    let department = match parts.next() {
-        Some(department) => department,
-        None => return Err(()),
-    };
+    let department = parts.next().ok_or(())?;
 
     // 追加のパラメータは禁止
     if parts.next().is_some() {
@@ -117,10 +107,7 @@ fn parse_add<'a>(mut parts: std::str::SplitWhitespace<'a>) -> Result<Command, ()
 }
 
 fn parse_list<'a>(mut parts: std::str::SplitWhitespace<'a>) -> Result<Command, ()> {
-    let department = match parts.next() {
-        Some(department) => department,
-        None => return Err(()),
-    };
+    let department = parts.next().ok_or(())?;
 
     // 追加のパラメータは禁止
     if parts.next().is_some() {
