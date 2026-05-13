@@ -13,9 +13,14 @@ fn main() {
     loop {
         let mut input = String::new();
 
-        io::stdin()
+        let bytes_read = io::stdin()
             .read_line(&mut input)
             .expect("Failed to read line");
+
+        // EOF で 0 を返したときに無限ループが発生しないようにする。
+        if bytes_read == 0 {
+            break;
+        }
 
         let mut parts = input.split_whitespace();
 
@@ -32,7 +37,10 @@ fn main() {
         match input {
             Ok(Command::Add { name, department }) => {
                 let members = company.entry(department).or_default();
-                members.push(name);
+
+                if !members.contains(&name) {
+                    members.push(name);
+                }
 
                 // 本当は責務的にもパフォーマンス的にも sort するべきではないと思うが、
                 // 発展的なデータ構造や immutable な list 操作を知らないため、ここで sort する。
@@ -133,7 +141,8 @@ fn parse_quit<'a>(mut parts: std::str::SplitWhitespace<'a>) -> Result<Command, (
     Ok(Command::Quit)
 }
 
-fn print_list(department: &str, members: &Vec<String>) {
+// &[String] にするのは必須ではないが、こっちだと Vec 以外も受け取れて嬉しい。
+fn print_list(department: &str, members: &[String]) {
     println!("{department}");
     for name in members {
         println!("- {name}")
