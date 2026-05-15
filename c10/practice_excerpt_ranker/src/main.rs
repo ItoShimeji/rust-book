@@ -32,7 +32,7 @@ impl Describe for LoginFailure {
 impl Describe for ApiError {
     fn describe(&self) -> String {
         format!(
-            "api error: endopoint={} status={} count={}",
+            "api error: endpoint={} status={} count={}",
             self.endpoint, self.status_code, self.count
         )
     }
@@ -46,7 +46,7 @@ impl RiskScore for LoginFailure {
 
 impl RiskScore for ApiError {
     fn risk_score(&self) -> i32 {
-        self.count + if self.status_code == 500 { 30 } else { 0 }
+        self.count * 5 + if self.status_code >= 500 { 30 } else { 0 }
     }
 }
 
