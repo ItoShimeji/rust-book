@@ -113,6 +113,10 @@ name = "practice_event_router"
 version = "0.1.0"
 
 [[package]]
+name = "practice_excerpt_ranker"
+version = "0.1.0"
+
+[[package]]
 name = "practice_fibonacci"
 version = "0.1.0"
 
