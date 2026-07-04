@@ -28,6 +28,10 @@ impl Guess {
     }
 }
 
+pub fn greeting(name: &str) -> String {
+    format!("Hello {name}!")
+}
+
 #[cfg(test)]
 mod tests {
     // 外のモジュールで定義したものを全て使えるようにする。
@@ -78,6 +82,15 @@ mod tests {
     #[should_panic]
     fn greater_than_100() {
         Guess::new(200);
+    }
+
+    #[test]
+    fn greeting_contains_name() {
+        let result = greeting("Carol");
+        assert!(
+            result.contains("Carol"),
+            "Greeting did not contain name, value was `{result}`"
+        );
     }
 }
 
