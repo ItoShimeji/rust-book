@@ -8,7 +8,7 @@ use std::process;
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    let config = Config::build(&args).unwrap_or_else(|err| {
+    let config = Config::build(env::args()).unwrap_or_else(|err| {
         eprintln!("Problem parsing arguments: {err}");
         process::exit(1);
     });
@@ -31,16 +31,19 @@ pub struct Config {
 }
 
 impl Config {
-    fn build(args: &[String]) -> Result<Self, &'static str> {
-        if args.len() < 3 {
-            // ここで文字列リテラル自体を返し、文字列はコンパイル済みバイナリに埋め込まれる。
-            // そのため、プログラム中常に存在する static な lifetime になる
-            return Err("not enough arguments");
-        }
+    fn build(mut args: impl Iterator<Item = String>) -> Result<Self, &'static str> {
+        // 1つめの要素は実行ファイルのパス
+        args.next();
 
-        // index 0 は実行ファイルのパス
-        let query = args[1].clone();
-        let file_path = args[2].clone();
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a query string"),
+        };
+
+        let file_path = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a file path"),
+        };
 
         // 環境変数の取得
         let ignore_case = env::var("IGNORE_CASE").is_ok();
