@@ -221,6 +221,10 @@ name = "rectangle"
 version = "0.1.0"
 
 [[package]]
+name = "reference-cycle"
+version = "0.1.0"
+
+[[package]]
 name = "references-and-borrowing"
 version = "0.1.0"
 
