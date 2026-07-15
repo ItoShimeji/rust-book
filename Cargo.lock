@@ -97,6 +97,13 @@ name = "closures"
 version = "0.1.0"
 
 [[package]]
+name = "concurrency-with-async"
+version = "0.1.0"
+dependencies = [
+ "trpl",
+]
+
+[[package]]
 name = "control_flow"
 version = "0.1.0"
 
