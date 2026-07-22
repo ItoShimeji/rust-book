@@ -1631,6 +1631,13 @@ name = "traits"
 version = "0.1.0"
 
 [[package]]
+name = "traits-for-async"
+version = "0.1.0"
+dependencies = [
+ "trpl",
+]
+
+[[package]]
 name = "trpl"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
