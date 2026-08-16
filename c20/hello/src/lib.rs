@@ -5,7 +5,8 @@ use std::thread;
 
 pub struct ThreadPool {
     workers: Vec<Worker>,
-    sender: Sender<Job>,
+    // drop method 内で sender の drop 後の状態を表現するため Option
+    sender: Option<Sender<Job>>,
 }
 
 impl ThreadPool {
@@ -32,7 +33,10 @@ impl ThreadPool {
             workers.push(Worker::new(id, Arc::clone(&receiver)));
         }
 
-        ThreadPool { workers, sender }
+        ThreadPool {
+            workers,
+            sender: Some(sender),
+        }
     }
 
     pub fn execute<F>(&self, f: F)
@@ -41,7 +45,23 @@ impl ThreadPool {
     {
         let job = Box::new(f);
 
-        self.sender.send(job).unwrap();
+        self.sender.as_ref().unwrap().send(job).unwrap();
+    }
+}
+
+impl Drop for ThreadPool {
+    fn drop(&mut self) {
+        drop(self.sender.take());
+
+        // worker を借用すると、thread を消費する join method を呼べない
+        // そのため、Vec から要素を抜き取ることで所有権を得ている
+        // drain が特別なわけではなく、pop などで要素を一個ずつ抜き取っても良い
+        for worker in self.workers.drain(..) {
+            println!("Shutting down worker {}", worker.id);
+
+            // panic 後の clean up 中に呼ばれるコードで panic をするのはプロダクションコードでは好ましくない
+            worker.thread.join().unwrap();
+        }
     }
 }
 
@@ -59,11 +79,21 @@ impl Worker {
     fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Self {
         let thread = thread::spawn(move || {
             loop {
-                let job = receiver.lock().unwrap().recv().unwrap();
+                let message = receiver.lock().unwrap().recv();
 
-                println!("Worker {} got a job; executing.", id);
+                // ThreadPool の drop method 内で sender が drop されると、channel が閉じ、
+                // Err のメッセージが届く
+                match message {
+                    Ok(job) => {
+                        println!("Worker {} got a job; executing.", id);
 
-                job();
+                        job();
+                    }
+                    Err(_) => {
+                        println!("Worker {id} disconnected; shutting down.");
+                        break;
+                    }
+                }
             }
         });
 
