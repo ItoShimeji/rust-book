@@ -1,4 +1,4 @@
 [workspace]
-members = ["c*/*"]
+members = ["c*/*", "c19/hello_macro/hello_macro_derive"]
 exclude = ["c1/hello_world"]
 resolver = "3"
