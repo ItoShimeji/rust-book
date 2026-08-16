@@ -395,6 +395,10 @@ name = "hash-maps"
 version = "0.1.0"
 
 [[package]]
+name = "hello"
+version = "0.1.0"
+
+[[package]]
 name = "hello-async"
 version = "0.1.0"
 dependencies = [
